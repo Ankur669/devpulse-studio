@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevPulse Studio - Developer Productivity & Memory Optimization Platform</title>
+  <meta name="description" content="AI-accelerated developer productivity suite: automates coding and documentation workflows, connects with GitHub/GitLab, and optimizes runtime memory usage with AST and tracemalloc.">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <h1 class="brand-name">DevPulse Studio</h1>
+          <span class="brand-tag">v2.4 Pro</span>
+        </div>
+        <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: -2px;">
+          Productivity, Documentation & Memory Optimization Suite
+        </div>
+      </div>
+    </div>
+
+    <div class="header-meta">
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        <span>Runtime: Python 3.12 (Tracemalloc Active)</span>
+      </div>
+      <div class="status-pill" style="display: none;" id="active-repo-badge">
+        <span>Repo: Sandbox Demo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs" role="tablist">
+    <button class="tab-btn active" data-tab="tab-memory" id="nav-tab-memory">
+      <span>⚡ Memory Optimizer</span>
+      <span class="tab-badge" id="mem-issues-count">0</span>
+    </button>
+    <button class="tab-btn" data-tab="tab-docs" id="nav-tab-docs">
+      <span>📝 Docs & Code Automation</span>
+    </button>
+    <button class="tab-btn" data-tab="tab-git" id="nav-tab-git">
+      <span>🐙 GitHub / GitLab Hub</span>
+    </button>
+    <button class="tab-btn" data-tab="tab-presets" id="nav-tab-presets">
+      <span>🚀 Interactive Demos</span>
+    </button>
+  </nav>
+
+  <!-- Main Workstation Container -->
+  <main class="app-container">
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: MEMORY OPTIMIZATION & PROFILER                               -->
+    <!-- =================================================================== -->
+    <section id="tab-memory" class="tab-pane active">
+      
+      <!-- Metrics Overview Cards -->
+      <div class="grid-4col" style="margin-bottom: 1.5rem;">
+        <div class="metric-card">
+          <span class="metric-label">Memory Saved %</span>
+          <span class="metric-value saved" id="stat-saved-percent">--</span>
+          <span class="metric-hint">Through automated generator & slot optimizations</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Total RAM Reduced</span>
+          <span class="metric-value saved" id="stat-saved-kb">--</span>
+          <span class="metric-hint">Difference in peak memory allocation</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Peak Allocation</span>
+          <span class="metric-value peak" id="stat-peak-mem">--</span>
+          <span class="metric-hint">Measured dynamically via tracemalloc</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Execution Time</span>
+          <span class="metric-value speedup" id="stat-exec-time">--</span>
+          <span class="metric-hint" id="stat-speedup">Subprocess execution latency</span>
+        </div>
+      </div>
+
+      <!-- Main Memory Workbench Grid -->
+      <div class="grid-2col">
+        
+        <!-- Left: Code Editor & Controls -->
+        <div class="glass-card highlight-violet">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>🐍 Python Source Code</span>
+              </div>
+              <div class="card-subtitle">Input Python code to profile memory spikes, detect anti-patterns, and rewrite for efficiency.</div>
+            </div>
+            <div>
+              <select class="form-select" id="mem-preset-select" style="font-size: 0.78rem; padding: 0.35rem 0.6rem; width: auto;">
+                <option value="">Load Preset Scenario...</option>
+                <option value="memory_streaming">Big Data Streaming & Aggregations</option>
+                <option value="memory_slots">High-Volume Class Instances (__slots__)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="editor-container" style="margin-bottom: 1rem;">
+            <div class="editor-toolbar">
+              <span class="editor-title"><code>target_script.py</code></span>
+              <div class="editor-actions">
+                <button class="btn btn-secondary btn-sm" onclick="document.getElementById('mem-code-editor').value = ''">Clear</button>
+              </div>
+            </div>
+            <textarea id="mem-code-editor" class="code-textarea" spellcheck="false" placeholder="# Paste your Python code here..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+            <button id="btn-mem-scan" class="btn btn-secondary">
+              🔍 AST Static Scan
+            </button>
+            <button id="btn-mem-profile" class="btn btn-cyan">
+              ⚡ Dynamic Tracemalloc Profile
+            </button>
+            <button id="btn-mem-optimize" class="btn btn-primary">
+              🚀 Auto-Optimize & Benchmark
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Memory Diagnostics & Optimization Viewer -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+
+          <!-- Card 1: Static Anti-Pattern Warnings -->
+          <div class="glass-card highlight-cyan">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <span>🛡️ Memory Anti-Pattern Diagnostics</span>
+                </div>
+                <div class="card-subtitle">AST static rule analysis detecting memory leaks, eager collections, and GC churn.</div>
+              </div>
+            </div>
+            <div class="issues-list" id="mem-issues-container">
+              <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                Click <strong>AST Static Scan</strong> to inspect code for memory anti-patterns.
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Side-by-Side Optimization & Tracemalloc Breakdown -->
+          <div class="glass-card highlight-emerald">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <span>✨ Memory Optimizer Comparison</span>
+                </div>
+                <div class="card-subtitle">Automated refactoring results with concrete memory reduction stats.</div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-copy-opt">Copy</button>
+                <button class="btn btn-emerald btn-sm" id="btn-apply-opt">Apply to Editor</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; background: rgba(0,0,0,0.25); padding: 0.75rem 1rem; border-radius: var(--radius-sm);">
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Original Peak</div>
+                <div style="font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent-rose);" id="benchmark-orig-peak">--</div>
+              </div>
+              <div style="border-right: 1px solid var(--border-subtle);"></div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Optimized Peak</div>
+                <div style="font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent-emerald);" id="benchmark-opt-peak">--</div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 0.8rem;">
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.3rem;">Transformations Applied:</div>
+              <ul id="opt-changes-list" style="font-size: 0.82rem; color: var(--accent-cyan); list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                <li>Run "Auto-Optimize & Benchmark" to generate an optimized variant.</li>
+              </ul>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-toolbar">
+                <span class="editor-title"><code>optimized_script.py</code></span>
+              </div>
+              <div id="opt-code-output" class="code-output" style="min-height: 140px; max-height: 220px;"># Optimized code will appear here...</div>
+            </div>
+
+            <!-- Tracemalloc Allocation Breakdown Table -->
+            <div style="margin-top: 1rem;">
+              <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);">Top Memory Allocation Lines (tracemalloc snapshot):</div>
+              <table class="trace-table">
+                <thead>
+                  <tr>
+                    <th>Location</th>
+                    <th>Allocation</th>
+                    <th>Object Count</th>
+                  </tr>
+                </thead>
+                <tbody id="trace-table-body">
+                  <tr>
+                    <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 1rem;">
+                      No profile data yet. Run "Dynamic Tracemalloc Profile".
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: DOCS & CODE AUTOMATION                                       -->
+    <!-- =================================================================== -->
+    <section id="tab-docs" class="tab-pane">
+      <div class="grid-2col">
+        
+        <!-- Left: Documentation & Scaffolding Controls -->
+        <div class="glass-card highlight-violet">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>📝 Code & Documentation Automator</span>
+              </div>
+              <div class="card-subtitle">Automate docstrings (Google/NumPy/Sphinx), project READMEs, tests, and data models.</div>
+            </div>
+          </div>
+
+          <div class="editor-container" style="margin-bottom: 1rem;">
+            <div class="editor-toolbar">
+              <span class="editor-title"><code>module.py</code></span>
+              <div class="editor-actions">
+                <select class="form-select" id="doc-style-select" style="font-size: 0.78rem; padding: 0.25rem 0.5rem; width: auto;">
+                  <option value="google">Google Style</option>
+                  <option value="numpy">NumPy Style</option>
+                  <option value="sphinx">Sphinx / ReST</option>
+                </select>
+              </div>
+            </div>
+            <textarea id="docs-code-editor" class="code-textarea" spellcheck="false" placeholder="# Enter Python code for docstring synthesis or test generation..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+            <button id="btn-gen-docs" class="btn btn-cyan">
+              📖 Synthesize Docstrings
+            </button>
+            <button id="btn-inject-docs" class="btn btn-emerald">
+              💉 Inject Into Code
+            </button>
+            <button id="btn-gen-tests" class="btn btn-secondary">
+              🧪 Scaffold Pytest Suite
+            </button>
+          </div>
+
+          <!-- Secondary Automation Tools -->
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <div style="font-size: 0.92rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-cyan);">
+                📄 Synthesize Complete README.md
+              </div>
+              <div class="grid-2col" style="gap: 0.75rem; margin-bottom: 0.6rem;">
+                <input type="text" id="readme-name-input" class="form-control" placeholder="Project Name (e.g. DataStream X)">
+                <input type="text" id="readme-desc-input" class="form-control" placeholder="Short Project Description">
+              </div>
+              <button id="btn-gen-readme" class="btn btn-secondary btn-sm">
+                Generate Comprehensive README.md
+              </button>
+            </div>
+
+            <div>
+              <div style="font-size: 0.92rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-emerald);">
+                🏗️ Model Scaffolding (JSON to Memory-Efficient Models)
+              </div>
+              <div style="display: flex; gap: 0.75rem; margin-bottom: 0.6rem;">
+                <select id="model-type-select" class="form-select" style="width: 220px;">
+                  <option value="dataclass_slots">Dataclass with slots=True</option>
+                  <option value="pydantic">Pydantic v2 BaseModel</option>
+                  <option value="standard_slots">Python Class (__slots__)</option>
+                </select>
+                <input type="text" id="model-schema-input" class="form-control" placeholder='{"id": 1, "name": "Item", "price": 9.99}'>
+              </div>
+              <button id="btn-gen-models" class="btn btn-secondary btn-sm">
+                Generate Data Models
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Output & Export -->
+        <div class="glass-card highlight-cyan">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>📋 Generated Artifacts</span>
+              </div>
+              <div class="card-subtitle">Formatted docstrings, test suites, data models, or README markdown.</div>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-secondary btn-sm" id="btn-copy-doc-output">Copy Output</button>
+            </div>
+          </div>
+
+          <div class="editor-container">
+            <div class="editor-toolbar">
+              <span class="editor-title">Output Preview</span>
+            </div>
+            <div id="docs-result-output" class="code-output" style="min-height: 520px;"># Results from docstring synthesis, README, tests, or models will be rendered here...</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: GITHUB & GITLAB HUB                                          -->
+    <!-- =================================================================== -->
+    <section id="tab-git" class="tab-pane">
+      <div class="grid-2col">
+        
+        <!-- Left: Git Inputs & Diff Analyzer -->
+        <div class="glass-card highlight-violet">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>🐙 Git Diff & PR Assistant</span>
+              </div>
+              <div class="card-subtitle">Paste git diff to automatically generate PR descriptions, impact reports, and commits.</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="git-pr-context">PR Purpose / Context (Optional):</label>
+            <input type="text" id="git-pr-context" class="form-control" placeholder="e.g. Optimize stream ingestion and reduce list allocations">
+          </div>
+
+          <div class="editor-container" style="margin-bottom: 1rem;">
+            <div class="editor-toolbar">
+              <span class="editor-title"><code>git diff HEAD~1</code></span>
+            </div>
+            <textarea id="git-diff-input" class="code-textarea" spellcheck="false" placeholder="Paste raw git diff here..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+            <button id="btn-diff-to-pr" class="btn btn-primary">
+              📋 Generate PR / MR Description
+            </button>
+          </div>
+
+          <!-- Conventional Commits & CI/CD Builders -->
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <div style="font-size: 0.92rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-cyan);">
+                ⚡ Conventional Commit Generator
+              </div>
+              <div class="grid-3col" style="gap: 0.5rem; margin-bottom: 0.5rem;">
+                <select id="commit-type-select" class="form-select">
+                  <option value="feat">feat (New Feature)</option>
+                  <option value="perf" selected>perf (Performance & Memory)</option>
+                  <option value="fix">fix (Bug Fix)</option>
+                  <option value="refactor">refactor (Refactor)</option>
+                  <option value="docs">docs (Documentation)</option>
+                  <option value="test">test (Tests)</option>
+                </select>
+                <input type="text" id="commit-scope-input" class="form-control" placeholder="scope (e.g. memory)">
+                <input type="text" id="commit-desc-input" class="form-control" placeholder="Short description" value="stream data using generator to reduce RAM">
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label style="font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary);">
+                  <input type="checkbox" id="commit-breaking-check"> Breaking Change (!)
+                </label>
+                <button id="btn-gen-commit" class="btn btn-secondary btn-sm">Format Commit</button>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size: 0.92rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-emerald);">
+                🚀 CI/CD Pipeline Generator (Memory Guard Included)
+              </div>
+              <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.6rem;">
+                <select id="cicd-platform-select" class="form-select" style="width: 180px;">
+                  <option value="github">GitHub Actions</option>
+                  <option value="gitlab">GitLab CI</option>
+                </select>
+                <label style="font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary);">
+                  <input type="checkbox" id="cicd-memory-check" checked> Add Tracemalloc Memory Guard Step
+                </label>
+              </div>
+              <button id="btn-gen-cicd" class="btn btn-secondary btn-sm">Generate Pipeline YAML</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Remote Integration & Generated Summary -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          
+          <!-- Remote GitHub/GitLab Explorer -->
+          <div class="glass-card highlight-cyan">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <span>🌐 Remote Repository Explorer</span>
+                </div>
+                <div class="card-subtitle">Connect live to GitHub or GitLab REST API (with sandbox testbed mode).</div>
+              </div>
+            </div>
+
+            <div class="grid-3col" style="gap: 0.5rem; margin-bottom: 0.6rem;">
+              <select id="remote-platform-select" class="form-select">
+                <option value="github">GitHub</option>
+                <option value="gitlab">GitLab</option>
+              </select>
+              <input type="text" id="remote-repo-input" class="form-control" placeholder="owner/repo (or 'demo')">
+              <input type="password" id="remote-token-input" class="form-control" placeholder="PAT Token (Optional)">
+            </div>
+            <button id="btn-fetch-repo" class="btn btn-secondary btn-sm">Inspect Repository</button>
+
+            <div id="remote-repo-details"></div>
+          </div>
+
+          <!-- Generated PR / Commit / CI-CD Preview -->
+          <div class="glass-card highlight-emerald">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <span>📑 Generated PR / Pipeline Specification</span>
+                </div>
+                <div class="card-subtitle" id="pr-title-display">Generated title or status will be shown here.</div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-copy-git-output">Copy Output</button>
+              </div>
+            </div>
+
+            <div class="editor-container">
+              <div class="editor-toolbar">
+                <span class="editor-title">Markdown / YAML</span>
+              </div>
+              <div id="git-result-output" class="code-output" style="min-height: 380px;"># Results from PR generation, commit synthesis, or CI/CD pipelines will appear here...</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: INTERACTIVE PRESETS & SANDBOX                                -->
+    <!-- =================================================================== -->
+    <section id="tab-presets" class="tab-pane">
+      <div class="glass-card highlight-violet" style="margin-bottom: 1.5rem;">
+        <div class="card-title" style="font-size: 1.3rem; margin-bottom: 0.35rem;">
+          🚀 Guided Quick-Start Demonstration Scenarios
+        </div>
+        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+          Select any interactive preset below to immediately test AST analysis, live runtime tracemalloc profiling, automated docstring synthesis, and GitHub/GitLab integrations with one click.
+        </div>
+      </div>
+
+      <div class="preset-grid" id="presets-grid-container">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Toast Notifications Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
